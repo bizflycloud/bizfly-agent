@@ -29,9 +29,7 @@ func main() {
 	}
 
 	pusher := push.New(*pushGatewayAddress, "bizfly-agent").Client(httpClient)
-	for _, c := range nc.Collectors {
-		pusher.Collector(c)
-	}
+	pusher.Collector(nc)
 
 	if err := pusher.Push(); err != nil {
 		log.Errorf("failed to make initial push to push gateway: %v", err)
