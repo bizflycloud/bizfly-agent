@@ -19,7 +19,7 @@ func getDeviceMapping() (m map[string]string) {
 
 	for _, device := range devices {
 		parts := strings.Split(strings.TrimPrefix(device.Name(), "virtio-"), "-")
-		uuid := strings.Join(parts[:len(parts)], "-")
+		uuid := strings.Join(parts[:len(parts)-1], "-")
 		src, err := os.Readlink(filepath.Join(fid.Name(), device.Name()))
 		if err != nil {
 			continue
