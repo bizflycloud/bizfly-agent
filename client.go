@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-const defaultMetadataEndpoint = "http://169.254.169.254/metadata"
+const defaultMetadataEndpoint = "http://169.254.169.254"
 
 type client struct {
 	httpClient       *http.Client
@@ -16,31 +16,46 @@ type client struct {
 	authToken        string
 }
 
-func (c *client) GetAuthToken() (string, error) {
-	return c.get(fmt.Sprintf("%s/agent/authtoken", c.metadataEndpoint))
+func newHTTPClient() *client {
+	return &client{
+		httpClient:       http.DefaultClient,
+		metadataEndpoint: defaultMetadataEndpoint,
+	}
 }
 
-func (c *client) get(url string) (string, error) {
-	req, err := http.NewRequest("GET", url, nil)
+func (c *client) GetAuthToken() (string, error) {
+	resp, err := c.get(fmt.Sprintf("%s/metadata/agent/authtoken", c.metadataEndpoint))
 	if err != nil {
 		return "", err
+	}
+	return string(resp), nil
+}
+
+func (c *client) GetDeviceMapping() ([]byte, error) {
+	return c.get(fmt.Sprintf("%s/latest/meta-data/mappings", c.metadataEndpoint))
+}
+
+func (c *client) get(url string) ([]byte, error) {
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, err
 	}
 
 	resp, err := c.httpClient.Do(req.WithContext(context.Background()))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return "", errors.New("failed to get")
+		return nil, errors.New("failed to get")
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(body), nil
+	return body, nil
 }
 
 func (c *client) Do(req *http.Request) (*http.Response, error) {

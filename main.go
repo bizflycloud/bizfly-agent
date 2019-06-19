@@ -2,13 +2,11 @@ package main
 
 import (
 	"io/ioutil"
-	"net/http"
 	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus/push"
 	"github.com/prometheus/common/log"
-	"github.com/prometheus/node_exporter/collector"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -20,12 +18,7 @@ func main() {
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
-	httpClient := &client{
-		httpClient:       http.DefaultClient,
-		metadataEndpoint: defaultMetadataEndpoint,
-	}
-
-	nc, err := collector.NewNodeCollector(defaultCollectors...)
+	nc, err := newNodeCollector(defaultCollectors)
 	if err != nil {
 		log.Fatalf("failed to create new collector: %s\n", err.Error())
 	}
@@ -35,6 +28,7 @@ func main() {
 	}
 	instanceID := strings.TrimSuffix(string(data), "\n")
 
+	httpClient := newHTTPClient()
 	pusher := push.New(*pushGatewayAddress, "bizfly-agent").
 		Client(httpClient).
 		Grouping("instance_id", instanceID).
