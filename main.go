@@ -28,10 +28,6 @@ func main() {
 	}
 	instanceID := strings.TrimSuffix(string(data), "\n")
 
-	if len(nc.deviceMapping) == 0 {
-		log.Error("failed to get device mapping")
-	}
-
 	httpClient := newHTTPClient()
 	pusher := push.New(*pushGatewayAddress, "bizfly-agent").
 		Client(httpClient).
@@ -45,8 +41,6 @@ func main() {
 		time.Sleep(time.Second * time.Duration(*waitDuration))
 		if err := pusher.Push(); err != nil {
 			log.Errorf("failed to push to push gateway: %s\n", err.Error())
-			continue
 		}
-		nc.cleanUnusedDevice()
 	}
 }

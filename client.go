@@ -31,10 +31,6 @@ func (c *client) AuthToken() (string, error) {
 	return string(resp), nil
 }
 
-func (c *client) DeviceMapping() ([]byte, error) {
-	return c.get(fmt.Sprintf("%s/latest/meta-data/mappings", c.metadataEndpoint))
-}
-
 func (c *client) get(url string) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
