@@ -92,8 +92,12 @@ func (m deviceMappingMetric) Desc() *prometheus.Desc { return m.metric.Desc() }
 func (m deviceMappingMetric) Write(pb *dto.Metric) error {
 	e := m.metric.Write(pb)
 	for _, label := range pb.Label {
-		if volumeID, ok := m.deviceMapping[label.GetValue()]; ok {
-			label.Value = &volumeID
+		mountName := label.GetValue()
+		for k, v := range m.deviceMapping {
+			if strings.HasPrefix(mountName, k) {
+				label.Value = &v
+				break
+			}
 		}
 	}
 	return e
