@@ -45,6 +45,8 @@ func main() {
 		time.Sleep(time.Second * time.Duration(*waitDuration))
 		if err := pusher.Push(); err != nil {
 			log.Errorf("failed to push to push gateway: %s\n", err.Error())
+			continue
 		}
+		nc.cleanUnusedDevice()
 	}
 }
