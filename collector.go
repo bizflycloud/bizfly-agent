@@ -26,7 +26,7 @@ func newNodeCollector(collectors []string) (*nodeCollector, error) {
 		return nil, err
 	}
 
-	return &nodeCollector{
+	nc := &nodeCollector{
 		collectFunc:  c.Collect,
 		describeFunc: c.Describe,
 		collectorsFunc: func() map[string]collector.Collector {
@@ -34,7 +34,12 @@ func newNodeCollector(collectors []string) (*nodeCollector, error) {
 		},
 		httpClient:    newHTTPClient(),
 		deviceMetrics: []string{"node_filesystem_size_bytes", "node_filesystem_free_bytes"},
-	}, nil
+	}
+	if data, err := nc.httpClient.DeviceMapping(); err == nil {
+		json.Unmarshal(data, &nc.deviceMapping)
+	}
+
+	return nc, nil
 }
 
 type nodeCollector struct {
@@ -43,6 +48,7 @@ type nodeCollector struct {
 	collectorsFunc func() map[string]collector.Collector
 	httpClient     *client
 	deviceMetrics  []string
+	deviceMapping  map[string]string
 }
 
 func (n *nodeCollector) Collectors() map[string]collector.Collector {
@@ -104,11 +110,5 @@ func (m deviceMappingMetric) Write(pb *dto.Metric) error {
 }
 
 func (n *nodeCollector) metricWithDeviceMappings(m prometheus.Metric) prometheus.Metric {
-	if data, err := n.httpClient.GetDeviceMapping(); err == nil {
-		deviceMapping := make(map[string]string)
-		if err := json.Unmarshal(data, &deviceMapping); err == nil {
-			return deviceMappingMetric{metric: m, deviceMapping: deviceMapping}
-		}
-	}
-	return m
+	return deviceMappingMetric{metric: m, deviceMapping: n.deviceMapping}
 }

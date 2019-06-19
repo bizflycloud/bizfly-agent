@@ -23,7 +23,7 @@ func newHTTPClient() *client {
 	}
 }
 
-func (c *client) GetAuthToken() (string, error) {
+func (c *client) AuthToken() (string, error) {
 	resp, err := c.get(fmt.Sprintf("%s/metadata/agent/authtoken", c.metadataEndpoint))
 	if err != nil {
 		return "", err
@@ -31,7 +31,7 @@ func (c *client) GetAuthToken() (string, error) {
 	return string(resp), nil
 }
 
-func (c *client) GetDeviceMapping() ([]byte, error) {
+func (c *client) DeviceMapping() ([]byte, error) {
 	return c.get(fmt.Sprintf("%s/latest/meta-data/mappings", c.metadataEndpoint))
 }
 
@@ -61,7 +61,7 @@ func (c *client) get(url string) ([]byte, error) {
 func (c *client) Do(req *http.Request) (*http.Response, error) {
 	var err error
 	if c.authToken == "" {
-		c.authToken, err = c.GetAuthToken()
+		c.authToken, err = c.AuthToken()
 		if err != nil {
 			return nil, err
 		}
