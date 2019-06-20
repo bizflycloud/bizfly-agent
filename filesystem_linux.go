@@ -21,7 +21,9 @@ func getDeviceMapping() map[string]string {
 
 	for _, device := range devices {
 		parts := strings.Split(strings.TrimPrefix(device.Name(), "virtio-"), "-")
-		uuid := strings.Join(parts[:len(parts)-1], "-")
+		// After removing "virtio-" prefix, device id has form 36ae2fbb-3619-4933-...,
+		// get first 3 element only.
+		uuid := strings.Join(parts[:3], "-")
 		src, err := os.Readlink(filepath.Join(fid.Name(), device.Name()))
 		if err != nil {
 			continue
