@@ -6,15 +6,17 @@ import (
 	"strings"
 )
 
-func getDeviceMapping() (m map[string]string) {
+func getDeviceMapping() map[string]string {
+	m := make(map[string]string)
 	fid, err := os.Open("/dev/disk/by-id")
 	if err != nil {
-		return
+		return nil
 	}
+	defer fid.Close()
 
 	devices, err := fid.Readdir(1024)
 	if err != nil {
-		return
+		return nil
 	}
 
 	for _, device := range devices {
@@ -24,9 +26,8 @@ func getDeviceMapping() (m map[string]string) {
 		if err != nil {
 			continue
 		}
-
 		m[filepath.Base(src)] = uuid
 	}
 
-	return
+	return m
 }
