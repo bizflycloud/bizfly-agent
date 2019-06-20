@@ -64,5 +64,16 @@ func (c *client) Do(req *http.Request) (*http.Response, error) {
 	}
 	req.Header.Add("Authorization", "Bearer "+c.authToken)
 
+	res, err := c.httpClient.Do(req)
+	if err != nil || res.StatusCode != http.StatusForbidden {
+		return res, err
+	}
+
+	// Maybe token expired, get new one and retry
+	c.authToken, err = c.AuthToken()
+	if err != nil {
+		return nil, err
+	}
+
 	return c.httpClient.Do(req)
 }
