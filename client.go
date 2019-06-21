@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -63,6 +64,8 @@ func (c *client) Do(req *http.Request) (*http.Response, error) {
 		}
 	}
 	req.Header.Add("Authorization", "Bearer "+c.authToken)
+	body, _ := ioutil.ReadAll(req.Body)
+	req.Body = ioutil.NopCloser(bytes.NewReader(body))
 
 	res, err := c.httpClient.Do(req)
 	if err != nil || res.StatusCode != http.StatusForbidden {
@@ -75,5 +78,7 @@ func (c *client) Do(req *http.Request) (*http.Response, error) {
 		return nil, err
 	}
 
+	req.Body = ioutil.NopCloser(bytes.NewReader(body))
+	req.Header.Set("Authorization", "Bearer "+c.authToken)
 	return c.httpClient.Do(req)
 }
