@@ -1,0 +1,14 @@
+# Where save auth token
+configDir: .
+
+agent:
+  id: 5ec5eef8a0a0be0018364823
+  name: gooogle-node-apjxd08l
+  hostname: gooogle-node-apjxd08l
+
+authServer:
+  defaultMetadataEndpoint: http://192.168.53.89:8009
+
+pushGW:
+  url: http://192.168.53.89:9091
+  waitDuration: 30
