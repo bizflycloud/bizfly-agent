@@ -41,13 +41,14 @@ type Token struct {
 // Client will use this token instead by get new token every time.
 func (t *Token) SaveToken(token string) error {
 	viper.Unmarshal(&cfg)
+	filename := filepath.Join(cfg.ConfigDir, "/auth_token")
 
-	file, err := os.Create(cfg.ConfigDir + "/auth_token")
+	file, err := os.Create(filename)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println("Saving auth token")
+	log.Println("Saving auth token to:", filename)
 	_, err = file.WriteString(token)
 	if err != nil {
 		log.Fatal(err)
