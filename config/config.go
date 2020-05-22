@@ -17,7 +17,7 @@
 
 package config
 
-// Configurations is exported
+// Configurations ...
 type Configurations struct {
 	Agent      AgentsConfigurations
 	AuthServer ServersConfigurations
@@ -25,19 +25,19 @@ type Configurations struct {
 	ConfigDir  string
 }
 
-// AgentsConfigurations is exported
+// AgentsConfigurations ...
 type AgentsConfigurations struct {
 	ID       string
 	Name     string
 	Hostname string
 }
 
-// ServersConfigurations is exported
+// ServersConfigurations ...
 type ServersConfigurations struct {
 	DefaultMetadataEndpoint string
 }
 
-// PushGateWay is
+// PushGateWay ...
 type PushGateWay struct {
 	URL          string
 	WaitDuration int

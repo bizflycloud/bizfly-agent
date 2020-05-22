@@ -22,13 +22,14 @@ import (
 	"fmt"
 	"strings"
 
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/client"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/node_exporter/collector"
+
+	"github.com/bizflycloud/bizfly-agent/client"
 )
 
-// DefaultCollectors is exported
+// DefaultCollectors ...
 var DefaultCollectors = []string{
 	"cpu",
 	"diskstats",
@@ -39,7 +40,7 @@ var DefaultCollectors = []string{
 	"netdev",
 }
 
-// NewNodeCollector is exported
+// NewNodeCollector ...
 func NewNodeCollector(collectors []string) (*NodeCollector, error) {
 	c, err := collector.NewNodeCollector(collectors...)
 	if err != nil {
@@ -59,7 +60,7 @@ func NewNodeCollector(collectors []string) (*NodeCollector, error) {
 	return nc, nil
 }
 
-// NodeCollector is exported
+// NodeCollector ...
 type NodeCollector struct {
 	collectFunc    func(ch chan<- prometheus.Metric)
 	describeFunc   func(ch chan<- *prometheus.Desc)
@@ -68,17 +69,17 @@ type NodeCollector struct {
 	deviceMetrics  []string
 }
 
-// Collectors is exported
+// Collectors ...
 func (n *NodeCollector) Collectors() map[string]collector.Collector {
 	return n.collectorsFunc()
 }
 
-// Name is exported
+// Name ...
 func (n *NodeCollector) Name() string {
 	return "node"
 }
 
-// Collect is exported
+// Collect ...
 func (n *NodeCollector) Collect(ch chan<- prometheus.Metric) {
 	mChan := make(chan prometheus.Metric, 1)
 	go func() {
@@ -95,7 +96,7 @@ func (n *NodeCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-// IsDeviceMetric is exported
+// IsDeviceMetric ...
 func (n *NodeCollector) IsDeviceMetric(desc string) bool {
 	for _, s := range n.deviceMetrics {
 		if strings.Contains(desc, fmt.Sprintf(`fqname: "%s"`, s)) {
@@ -105,7 +106,7 @@ func (n *NodeCollector) IsDeviceMetric(desc string) bool {
 	return false
 }
 
-// Describe is exported
+// Describe ...
 func (n *NodeCollector) Describe(ch chan<- *prometheus.Desc) {
 	n.describeFunc(ch)
 }

@@ -20,10 +20,8 @@ package cmd
 import (
 	"log"
 
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/config"
-	"gopkg.in/alecthomas/kingpin.v2"
-
 	"github.com/spf13/viper"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
@@ -47,10 +45,5 @@ func InitConfig() {
 		log.Println("Using config file:", viper.ConfigFileUsed())
 	} else {
 		log.Fatalln("Unreadable config file:", viper.ConfigFileUsed())
-	}
-
-	var Cfg config.Configurations
-	if err := viper.Unmarshal(&Cfg); err != nil {
-		log.Fatalf("Unable to decode into struct, %s", err)
 	}
 }

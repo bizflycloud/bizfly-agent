@@ -21,12 +21,14 @@ import (
 	"log"
 	"time"
 
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/client"
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/cmd"
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/collectors"
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/config"
 	"github.com/prometheus/client_golang/prometheus/push"
+	prol "github.com/prometheus/common/log"
 	"github.com/spf13/viper"
+
+	"github.com/bizflycloud/bizfly-agent/client"
+	"github.com/bizflycloud/bizfly-agent/cmd"
+	"github.com/bizflycloud/bizfly-agent/collectors"
+	"github.com/bizflycloud/bizfly-agent/config"
 )
 
 func init() {
@@ -36,6 +38,7 @@ func init() {
 func main() {
 	var cfg config.Configurations
 	viper.Unmarshal(&cfg)
+
 	var httpClient = client.NewHTTPClient()
 	httpClient.AuthToken()
 
@@ -55,12 +58,12 @@ func main() {
 		Collector(nc)
 
 	if err := pusher.Push(); err != nil {
-		log.Fatalf("failed to make initial push to push gateway: %s", err.Error())
+		prol.Errorf("failed to make initial push to push gateway: %s", err.Error())
 	}
 	for {
 		time.Sleep(time.Second * time.Duration(waitDuration))
 		if err := pusher.Push(); err != nil {
-			log.Fatalf("failed to push data was collected to push gateway: %s\n", err.Error())
+			prol.Errorf("failed to push data was collected to push gateway: %s\n", err.Error())
 		} else {
 			log.Println("pushing data was collected to push gateway")
 		}

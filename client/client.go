@@ -26,9 +26,10 @@ import (
 	"log"
 	"net/http"
 
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/auth"
-	"git.paas.vn/OpenStack-Infra/bizfly-agent/config"
 	"github.com/spf13/viper"
+
+	"github.com/bizflycloud/bizfly-agent/auth"
+	"github.com/bizflycloud/bizfly-agent/config"
 )
 
 var (
@@ -37,21 +38,21 @@ var (
 	authToken               auth.Token
 )
 
-// Client is exported
+// Client ...
 type Client struct {
 	httpClient       *http.Client
 	metadataEndpoint string
 	authToken        string
 }
 
-// NewHTTPClient is exported
+// NewHTTPClient ...
 func NewHTTPClient() *Client {
 	return &Client{
 		httpClient: http.DefaultClient,
 	}
 }
 
-// AuthToken is exported
+// AuthToken ...
 func (c *Client) AuthToken() (string, error) {
 	viper.Unmarshal(&cfg)
 	if cfg.AuthServer.DefaultMetadataEndpoint == "" {
@@ -69,7 +70,7 @@ func (c *Client) AuthToken() (string, error) {
 	return string(resp), nil
 }
 
-// Get is exported
+// Get ...
 func (c *Client) Get(url string) ([]byte, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -93,7 +94,7 @@ func (c *Client) Get(url string) ([]byte, error) {
 	return body, nil
 }
 
-// Do is exported
+// Do ...
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	var err error
 	if c.authToken == "" {
