@@ -29,7 +29,7 @@ var o sync.Once
 
 func init() {
 	o.Do(func() {
-		viper.SetConfigFile("bizfly-agent")
+		viper.SetConfigFile("bizfly-agent.yaml")
 		viper.AddConfigPath("/etc/bizfly-agent")
 		viper.AddConfigPath("$HOME/.bizfly-agent")
 		viper.AddConfigPath(".")
