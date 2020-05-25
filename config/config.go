@@ -58,7 +58,7 @@ type AgentsConfigurations struct {
 
 // ServersConfigurations contains server configuration.
 type ServersConfigurations struct {
-	DefaultMetadataEndpoint string
+	DefaultEndpoint string
 }
 
 // PushGateWay contains push gateway configuration.

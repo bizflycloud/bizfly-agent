@@ -50,12 +50,12 @@ func NewHTTPClient() *Client {
 	return c
 }
 
-// AuthToken ...
+// AuthToken get, save and set auth token
 func (c *Client) AuthToken() (string, error) {
-	if config.Config.AuthServer.DefaultMetadataEndpoint == "" {
+	if config.Config.AuthServer.DefaultEndpoint == "" {
 		prol.Fatalln("Default Metadata Endpoint is required")
 	}
-	c.metadataEndpoint = config.Config.AuthServer.DefaultMetadataEndpoint
+	c.metadataEndpoint = config.Config.AuthServer.DefaultEndpoint
 	resp, err := c.Get(fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.metadataEndpoint, config.Config.Agent.ID))
 	if err != nil {
 		return "", err

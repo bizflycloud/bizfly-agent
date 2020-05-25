@@ -4,7 +4,7 @@ agent:
   hostname: gooogle-node-apjxd08l
 
 authServer:
-  defaultMetadataEndpoint: http://192.168.53.89:8009
+  defaultEndpoint: http://192.168.53.89:8009
 
 pushGW:
   url: http://192.168.53.89:9091
