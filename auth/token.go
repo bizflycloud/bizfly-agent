@@ -27,13 +27,15 @@ import (
 	"github.com/bizflycloud/bizfly-agent/config"
 )
 
+const authTokenFilename = "auth_token"
+
 // Token ...
 type Token struct{}
 
 // SaveToken is save auth token to file auth_token in config directory
 // Client will use this token instead by get new token every time.
 func (t *Token) SaveToken(token string) error {
-	filename := filepath.Join(config.Config.ConfigDir, "/auth_token")
+	filename := filepath.Join(config.Config.ConfigDir, authTokenFilename)
 
 	file, err := os.Create(filename)
 	if err != nil {
@@ -54,7 +56,7 @@ func (t *Token) SaveToken(token string) error {
 // ReadToken is read auth token was saved before
 func (t *Token) ReadToken() (string, error) {
 	prol.Debugln("Reading auth token")
-	data, err := ioutil.ReadFile(filepath.Join(config.Config.ConfigDir, "/auth_token"))
+	data, err := ioutil.ReadFile(filepath.Join(config.Config.ConfigDir, authTokenFilename))
 	if err != nil {
 		prol.Fatal(err)
 		return "", err
