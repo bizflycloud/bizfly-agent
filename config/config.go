@@ -47,7 +47,6 @@ type Configurations struct {
 	Agent      AgentsConfigurations
 	AuthServer ServersConfigurations
 	PushGW     PushGateWay
-	ConfigDir  string
 }
 
 // AgentsConfigurations is agent configuration.

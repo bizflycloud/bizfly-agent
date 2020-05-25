@@ -31,22 +31,23 @@ import (
 	"github.com/bizflycloud/bizfly-agent/config"
 )
 
-var (
-	authToken auth.Token
-)
-
 // Client ...
 type Client struct {
 	httpClient       *http.Client
 	metadataEndpoint string
-	authToken        string
+	token            string
+	authToken        *auth.Token
 }
 
 // NewHTTPClient ...
 func NewHTTPClient() *Client {
-	return &Client{
+	c := &Client{
 		httpClient: http.DefaultClient,
 	}
+	if at, _ := auth.NewToken(); at != nil {
+		c.authToken = at
+	}
+	return c
 }
 
 // AuthToken ...
@@ -59,13 +60,14 @@ func (c *Client) AuthToken() (string, error) {
 	if err != nil {
 		return "", err
 	}
+	tokenStr := string(resp)
 
-	if err := authToken.SaveToken(string(resp)); err != nil {
-		return "", err
+	if c.authToken != nil {
+		_ = c.authToken.SaveToken(tokenStr)
 	}
 
-	c.authToken = string(resp)
-	return string(resp), nil
+	c.token = tokenStr
+	return tokenStr, nil
 }
 
 // Get ...
@@ -95,13 +97,13 @@ func (c *Client) Get(url string) ([]byte, error) {
 // Do ...
 func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	var err error
-	if c.authToken == "" {
-		c.authToken, err = authToken.ReadToken()
+	if c.token == "" && c.authToken != nil {
+		c.token, err = c.authToken.ReadToken()
 		if err != nil {
 			return nil, err
 		}
 	}
-	req.Header.Add("Authorization", "Bearer "+c.authToken)
+	req.Header.Add("Authorization", "Bearer "+c.token)
 	body, _ := ioutil.ReadAll(req.Body)
 	req.Body = ioutil.NopCloser(bytes.NewReader(body))
 
@@ -111,12 +113,12 @@ func (c *Client) Do(req *http.Request) (*http.Response, error) {
 	}
 
 	// Maybe token expired, get new one and retry
-	c.authToken, err = c.AuthToken()
+	c.token, err = c.AuthToken()
 	if err != nil {
 		return nil, err
 	}
 
 	req.Body = ioutil.NopCloser(bytes.NewReader(body))
-	req.Header.Set("Authorization", "Bearer "+c.authToken)
+	req.Header.Set("Authorization", "Bearer "+c.token)
 	return c.httpClient.Do(req)
 }

@@ -1,6 +1,3 @@
-# Where save auth token
-configDir: .
-
 agent:
   id: 5ec5eef8a0a0be0018364823
   name: gooogle-node-apjxd08l

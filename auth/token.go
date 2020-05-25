@@ -23,26 +23,41 @@ import (
 	"path/filepath"
 
 	prol "github.com/prometheus/common/log"
-
-	"github.com/bizflycloud/bizfly-agent/config"
 )
 
 const authTokenFilename = "auth_token"
 
 // Token ...
-type Token struct{}
+type Token struct {
+	authTokenFile string
+}
+
+// NewToken returns new Token instance.
+func NewToken() (*Token, error) {
+	t := &Token{}
+	userCfgDir, err := os.UserConfigDir()
+	if err != nil {
+		return nil, err
+	}
+	cfgDir := filepath.Join(userCfgDir, "bizfly-agent")
+	if err := os.Mkdir(cfgDir, 0700); err != nil {
+		return nil, err
+	}
+
+	t.authTokenFile = filepath.Join(cfgDir, authTokenFilename)
+	return t, nil
+}
 
 // SaveToken is save auth token to file auth_token in config directory
 // Client will use this token instead by get new token every time.
 func (t *Token) SaveToken(token string) error {
-	filename := filepath.Join(config.Config.ConfigDir, authTokenFilename)
-
-	file, err := os.Create(filename)
+	file, err := os.Create(t.authTokenFile)
 	if err != nil {
 		prol.Fatal(err)
 	}
+	file.Chmod(0600)
 
-	prol.Debugln("Saving auth token to: ", filename)
+	prol.Debugln("Saving auth token to: ", t.authTokenFile)
 	_, err = file.WriteString(token)
 	if err != nil {
 		prol.Fatal(err)
@@ -56,7 +71,7 @@ func (t *Token) SaveToken(token string) error {
 // ReadToken is read auth token was saved before
 func (t *Token) ReadToken() (string, error) {
 	prol.Debugln("Reading auth token")
-	data, err := ioutil.ReadFile(filepath.Join(config.Config.ConfigDir, authTokenFilename))
+	data, err := ioutil.ReadFile(t.authTokenFile)
 	if err != nil {
 		prol.Fatal(err)
 		return "", err
