@@ -22,6 +22,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/push"
 	prol "github.com/prometheus/common/log"
+	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/bizflycloud/bizfly-agent/client"
 	"github.com/bizflycloud/bizfly-agent/collectors"
@@ -29,6 +30,11 @@ import (
 )
 
 func main() {
+	// Do not remove theses lines, prometheus needs them to run.
+	prol.AddFlags(kingpin.CommandLine)
+	kingpin.HelpFlag.Short('h')
+	kingpin.Parse()
+
 	var httpClient = client.NewHTTPClient()
 	if _, err := httpClient.AuthToken(); err != nil {
 		prol.Fatalf("failed to get client auth token: %v", err)
