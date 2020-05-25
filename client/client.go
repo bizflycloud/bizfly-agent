@@ -23,8 +23,9 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
+
+	prol "github.com/prometheus/common/log"
 
 	"github.com/bizflycloud/bizfly-agent/auth"
 	"github.com/bizflycloud/bizfly-agent/config"
@@ -51,7 +52,7 @@ func NewHTTPClient() *Client {
 // AuthToken ...
 func (c *Client) AuthToken() (string, error) {
 	if config.Config.AuthServer.DefaultMetadataEndpoint == "" {
-		log.Fatalln("Default Metadata Endpoint is required")
+		prol.Fatalln("Default Metadata Endpoint is required")
 	}
 	c.metadataEndpoint = config.Config.AuthServer.DefaultMetadataEndpoint
 	resp, err := c.Get(fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.metadataEndpoint, config.Config.Agent.ID))

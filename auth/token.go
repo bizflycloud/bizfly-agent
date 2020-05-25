@@ -19,9 +19,10 @@ package auth
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
+
+	prol "github.com/prometheus/common/log"
 
 	"github.com/bizflycloud/bizfly-agent/config"
 )
@@ -36,13 +37,13 @@ func (t *Token) SaveToken(token string) error {
 
 	file, err := os.Create(filename)
 	if err != nil {
-		log.Fatal(err)
+		prol.Fatal(err)
 	}
 
-	log.Println("Saving auth token to:", filename)
+	prol.Debugln("Saving auth token to: ", filename)
 	_, err = file.WriteString(token)
 	if err != nil {
-		log.Fatal(err)
+		prol.Fatal(err)
 	}
 	if err := file.Close(); err != nil {
 		return err
@@ -52,10 +53,10 @@ func (t *Token) SaveToken(token string) error {
 
 // ReadToken is read auth token was saved before
 func (t *Token) ReadToken() (string, error) {
-	log.Println("Reading auth token")
+	prol.Debugln("Reading auth token")
 	data, err := ioutil.ReadFile(filepath.Join(config.Config.ConfigDir, "/auth_token"))
 	if err != nil {
-		log.Fatal(err)
+		prol.Fatal(err)
 		return "", err
 	}
 	return string(data), nil
