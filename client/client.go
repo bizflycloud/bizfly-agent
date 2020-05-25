@@ -60,7 +60,9 @@ func (c *Client) AuthToken() (string, error) {
 		return "", err
 	}
 
-	authToken.SaveToken(string(resp))
+	if err := authToken.SaveToken(string(resp)); err != nil {
+		return "", err
+	}
 
 	c.authToken = string(resp)
 	return string(resp), nil
