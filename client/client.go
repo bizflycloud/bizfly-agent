@@ -19,8 +19,6 @@ package client
 
 import (
 	"bytes"
-	"context"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -59,6 +57,7 @@ func (c *Client) AuthToken() (string, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
 	if err != nil {
 		prol.Error("Error reading request. ", err)
+		return "", err
 	}
 
 	req.Header.Set("X-Agent-Secret", config.Config.AuthServer.Secret)
@@ -83,30 +82,6 @@ func (c *Client) AuthToken() (string, error) {
 
 	c.token = tokenStr
 	return tokenStr, nil
-}
-
-// Get ...
-func (c *Client) Get(url string) ([]byte, error) {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := c.httpClient.Do(req.WithContext(context.Background()))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return nil, errors.New("failed to get")
-	}
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return body, nil
 }
 
 // Do ...
