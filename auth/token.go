@@ -40,7 +40,7 @@ func NewToken() (*Token, error) {
 		return nil, err
 	}
 	cfgDir := filepath.Join(userCfgDir, "bizfly-agent")
-	if err := os.Mkdir(cfgDir, 0700); err != nil {
+	if err := os.Mkdir(cfgDir, 0700); err != nil && !os.IsExist(err) {
 		return nil, err
 	}
 
