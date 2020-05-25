@@ -17,7 +17,32 @@
 
 package config
 
-// Configurations ...
+import (
+	"sync"
+
+	"github.com/spf13/viper"
+)
+
+// Config is the global configuration.
+var Config Configurations
+var o sync.Once
+
+func init() {
+	o.Do(func() {
+		viper.SetConfigFile("bizfly-agent")
+		viper.AddConfigPath("/etc/bizfly-agent")
+		viper.AddConfigPath("$HOME/.bizfly-agent")
+		viper.AddConfigPath(".")
+		if err := viper.ReadInConfig(); err != nil {
+			panic(err)
+		}
+		if err := viper.Unmarshal(&Config); err != nil {
+			panic(err)
+		}
+	})
+}
+
+// Configurations contains all configuration.
 type Configurations struct {
 	Agent      AgentsConfigurations
 	AuthServer ServersConfigurations
@@ -25,19 +50,19 @@ type Configurations struct {
 	ConfigDir  string
 }
 
-// AgentsConfigurations ...
+// AgentsConfigurations is agent configuration.
 type AgentsConfigurations struct {
 	ID       string
 	Name     string
 	Hostname string
 }
 
-// ServersConfigurations ...
+// ServersConfigurations contains server configuration.
 type ServersConfigurations struct {
 	DefaultMetadataEndpoint string
 }
 
-// PushGateWay ...
+// PushGateWay contains push gateway configuration.
 type PushGateWay struct {
 	URL          string
 	WaitDuration int

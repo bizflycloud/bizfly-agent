@@ -23,25 +23,16 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/spf13/viper"
-
 	"github.com/bizflycloud/bizfly-agent/config"
 )
 
-var (
-	cfg                     config.Configurations
-	defaultMetadataEndpoint = cfg.AuthServer.DefaultMetadataEndpoint
-)
-
 // Token ...
-type Token struct {
-}
+type Token struct{}
 
 // SaveToken is save auth token to file auth_token in config directory
 // Client will use this token instead by get new token every time.
 func (t *Token) SaveToken(token string) error {
-	viper.Unmarshal(&cfg)
-	filename := filepath.Join(cfg.ConfigDir, "/auth_token")
+	filename := filepath.Join(config.Config.ConfigDir, "/auth_token")
 
 	file, err := os.Create(filename)
 	if err != nil {
@@ -61,10 +52,8 @@ func (t *Token) SaveToken(token string) error {
 
 // ReadToken is read auth token was saved before
 func (t *Token) ReadToken() (string, error) {
-	viper.Unmarshal(&cfg)
-
 	log.Println("Reading auth token")
-	data, err := ioutil.ReadFile(filepath.Join(cfg.ConfigDir, "/auth_token"))
+	data, err := ioutil.ReadFile(filepath.Join(config.Config.ConfigDir, "/auth_token"))
 	if err != nil {
 		log.Fatal(err)
 		return "", err

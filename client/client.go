@@ -26,16 +26,12 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/spf13/viper"
-
 	"github.com/bizflycloud/bizfly-agent/auth"
 	"github.com/bizflycloud/bizfly-agent/config"
 )
 
 var (
-	cfg                     config.Configurations
-	defaultMetadataEndpoint string
-	authToken               auth.Token
+	authToken auth.Token
 )
 
 // Client ...
@@ -54,12 +50,11 @@ func NewHTTPClient() *Client {
 
 // AuthToken ...
 func (c *Client) AuthToken() (string, error) {
-	viper.Unmarshal(&cfg)
-	if cfg.AuthServer.DefaultMetadataEndpoint == "" {
+	if config.Config.AuthServer.DefaultMetadataEndpoint == "" {
 		log.Fatalln("Default Metadata Endpoint is required")
 	}
-	c.metadataEndpoint = cfg.AuthServer.DefaultMetadataEndpoint
-	resp, err := c.Get(fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.metadataEndpoint, cfg.Agent.ID))
+	c.metadataEndpoint = config.Config.AuthServer.DefaultMetadataEndpoint
+	resp, err := c.Get(fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.metadataEndpoint, config.Config.Agent.ID))
 	if err != nil {
 		return "", err
 	}

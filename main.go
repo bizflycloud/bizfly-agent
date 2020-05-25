@@ -18,43 +18,35 @@
 package main
 
 import (
-	"log"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus/push"
 	prol "github.com/prometheus/common/log"
-	"github.com/spf13/viper"
 
 	"github.com/bizflycloud/bizfly-agent/client"
-	"github.com/bizflycloud/bizfly-agent/cmd"
 	"github.com/bizflycloud/bizfly-agent/collectors"
 	"github.com/bizflycloud/bizfly-agent/config"
 )
 
-func init() {
-	cmd.InitConfig()
-}
-
 func main() {
-	var cfg config.Configurations
-	viper.Unmarshal(&cfg)
-
 	var httpClient = client.NewHTTPClient()
-	httpClient.AuthToken()
+	if _, err := httpClient.AuthToken(); err != nil {
+		prol.Fatalf("failed to get client auth token: %v", err)
+	}
 
-	pushGatewayAddress := cfg.PushGW.URL
-	waitDuration := cfg.PushGW.WaitDuration
+	pushGatewayAddress := config.Config.PushGW.URL
+	waitDuration := config.Config.PushGW.WaitDuration
 
 	nc, err := collectors.NewNodeCollector(collectors.DefaultCollectors)
 	if err != nil {
-		log.Fatalf("failed to create new collector: %s\n", err.Error())
+		prol.Fatalf("failed to create new collector: %s\n", err.Error())
 	}
 
 	pusher := push.New(pushGatewayAddress, "bizfly-agent").
 		Client(httpClient).
-		Grouping("instance_id", cfg.Agent.ID).
-		Grouping("hostname", cfg.Agent.Hostname).
-		Grouping("instance", cfg.Agent.Hostname).
+		Grouping("instance_id", config.Config.Agent.ID).
+		Grouping("hostname", config.Config.Agent.Hostname).
+		Grouping("instance", config.Config.Agent.Hostname).
 		Collector(nc)
 
 	if err := pusher.Push(); err != nil {
@@ -65,7 +57,7 @@ func main() {
 		if err := pusher.Push(); err != nil {
 			prol.Errorf("failed to push data was collected to push gateway: %s\n", err.Error())
 		} else {
-			log.Println("pushing data was collected to push gateway")
+			prol.Debugln("pushing data was collected to push gateway")
 		}
 	}
 }
