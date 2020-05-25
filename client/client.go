@@ -23,6 +23,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	prol "github.com/prometheus/common/log"
@@ -33,10 +34,10 @@ import (
 
 // Client ...
 type Client struct {
-	httpClient       *http.Client
-	metadataEndpoint string
-	token            string
-	authToken        *auth.Token
+	httpClient      *http.Client
+	defaultEndpoint string
+	token           string
+	authToken       *auth.Token
 }
 
 // NewHTTPClient ...
@@ -53,15 +54,30 @@ func NewHTTPClient() *Client {
 // AuthToken get, save and set auth token
 func (c *Client) AuthToken() (string, error) {
 	if config.Config.AuthServer.DefaultEndpoint == "" {
-		prol.Fatalln("Default Metadata Endpoint is required")
+		prol.Fatalln("Default Endpoint is required")
 	}
-	c.metadataEndpoint = config.Config.AuthServer.DefaultEndpoint
-	resp, err := c.Get(fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.metadataEndpoint, config.Config.Agent.ID))
+	c.defaultEndpoint = config.Config.AuthServer.DefaultEndpoint
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
+	if err != nil {
+		log.Fatal("Error reading request. ", err)
+	}
+
+	req.Header.Set("X-Agent-Secret", config.Config.AuthServer.Secret)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return "", err
 	}
-	tokenStr := string(resp)
+	defer resp.Body.Close()
 
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	tokenStr := string(body)
+
+	if resp.StatusCode == http.StatusForbidden {
+		prol.Fatalln("Error when get new auth token for agent")
+	}
 	if c.authToken != nil {
 		_ = c.authToken.SaveToken(tokenStr)
 	}
