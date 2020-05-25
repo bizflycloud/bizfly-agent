@@ -37,7 +37,7 @@ func main() {
 
 	var httpClient = client.NewHTTPClient()
 	if _, err := httpClient.AuthToken(); err != nil {
-		prol.Fatalf("failed to get client auth token: %v", err)
+		prol.Error("failed to get client auth token: %v", err)
 	}
 
 	pushGatewayAddress := config.Config.PushGW.URL

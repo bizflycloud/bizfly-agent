@@ -23,7 +23,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	prol "github.com/prometheus/common/log"
@@ -59,7 +58,7 @@ func (c *Client) AuthToken() (string, error) {
 	c.defaultEndpoint = config.Config.AuthServer.DefaultEndpoint
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
 	if err != nil {
-		log.Fatal("Error reading request. ", err)
+		prol.Error("Error reading request. ", err)
 	}
 
 	req.Header.Set("X-Agent-Secret", config.Config.AuthServer.Secret)
@@ -76,7 +75,7 @@ func (c *Client) AuthToken() (string, error) {
 	tokenStr := string(body)
 
 	if resp.StatusCode == http.StatusForbidden {
-		prol.Fatalln("Error when get new auth token for agent")
+		prol.Error("Error when get new auth token for agent")
 	}
 	if c.authToken != nil {
 		_ = c.authToken.SaveToken(tokenStr)
