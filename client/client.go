@@ -42,8 +42,10 @@ func NewHTTPClient() *Client {
 	c := &Client{
 		httpClient: http.DefaultClient,
 	}
-	if at, _ := auth.NewToken(); at != nil {
+	if at, err := auth.NewToken(); at != nil {
 		c.authToken = at
+	} else {
+		prol.Warnf("Token cached is disabled, auth.NewToken() failed: %v", err)
 	}
 	return c
 }
