@@ -1,0 +1,12 @@
+agent:
+  id: 5ecb7d23a0a0be000f8fbff6
+  name: gooogle-node-apjxd08l
+  hostname: gooogle-node-apjxd08l
+
+authServer:
+  defaultEndpoint: http://192.168.53.89:8009
+  secret: sjuyhfifkodcpzucmlsiwehtzdrrtnwq
+
+pushGW:
+  url: http://192.168.53.89:9091
+  waitDuration: 30
