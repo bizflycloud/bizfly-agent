@@ -21,7 +21,9 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"net/http"
+	"time"
 
 	prol "github.com/prometheus/common/log"
 
@@ -40,7 +42,17 @@ type Client struct {
 // NewHTTPClient ...
 func NewHTTPClient() *Client {
 	c := &Client{
-		httpClient: http.DefaultClient,
+		httpClient: &http.Client{
+			Transport: &http.Transport{
+				DialContext: (&net.Dialer{
+					Timeout:   30 * time.Second,
+					KeepAlive: 30 * time.Second,
+				}).DialContext,
+				TLSHandshakeTimeout:   10 * time.Second,
+				ResponseHeaderTimeout: 10 * time.Second,
+				ExpectContinueTimeout: 1 * time.Second,
+			},
+		},
 	}
 	if at, _ := auth.NewToken(); at != nil {
 		c.authToken = at
