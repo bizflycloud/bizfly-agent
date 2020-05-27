@@ -20,8 +20,10 @@ package collectors
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 
+	"github.com/go-kit/kit/log"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/node_exporter/collector"
@@ -42,7 +44,8 @@ var DefaultCollectors = []string{
 
 // NewNodeCollector ...
 func NewNodeCollector(collectors []string) (*NodeCollector, error) {
-	c, err := collector.NewNodeCollector(collectors...)
+	logger := log.NewLogfmtLogger(os.Stdout)
+	c, err := collector.NewNodeCollector(logger, collectors...)
 	if err != nil {
 		return nil, err
 	}
