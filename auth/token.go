@@ -55,7 +55,10 @@ func (t *Token) SaveToken(token string) error {
 	if err != nil {
 		prol.Fatal(err)
 	}
-	file.Chmod(0600)
+	err = file.Chmod(0600)
+	if err != nil {
+		prol.Errorln("Can't change mod of file auth_token")
+	}
 
 	prol.Debugln("Saving auth token to: ", t.authTokenFile)
 	_, err = file.WriteString(token)
