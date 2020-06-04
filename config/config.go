@@ -18,6 +18,8 @@
 package config
 
 import (
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -29,16 +31,31 @@ var o sync.Once
 
 func init() {
 	o.Do(func() {
-		viper.SetConfigFile("bizfly-agent.yaml")
+		viper.SetConfigName("bizfly-agent")
+		viper.SetConfigType("yaml")
 		viper.AddConfigPath("/etc/bizfly-agent")
-		viper.AddConfigPath("$HOME/.bizfly-agent")
 		viper.AddConfigPath(".")
+
+		userCfgDir, err := os.UserConfigDir()
+		if err != nil {
+			panic("Can't get user config directory")
+		}
+		cfgDir := filepath.Join(userCfgDir, "bizfly-agent")
+		viper.AddConfigPath(cfgDir)
+
 		if err := viper.ReadInConfig(); err != nil {
 			panic(err)
 		}
 		if err := viper.Unmarshal(&Config); err != nil {
 			panic(err)
 		}
+
+		hostname, err := os.Hostname()
+		if err != nil {
+			panic("Can't get hostname.")
+		}
+
+		Config.Agent.Hostname = hostname
 	})
 }
 
