@@ -31,17 +31,6 @@ import (
 	"github.com/bizflycloud/bizfly-agent/client"
 )
 
-// DefaultCollectors ...
-var DefaultCollectors = []string{
-	"cpu",
-	"diskstats",
-	"filesystem",
-	"loadavg",
-	"meminfo",
-	"netstat",
-	"netdev",
-}
-
 // NewNodeCollector ...
 func NewNodeCollector(collectors []string) (*NodeCollector, error) {
 	logger := log.NewLogfmtLogger(os.Stdout)

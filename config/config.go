@@ -33,8 +33,6 @@ func init() {
 	o.Do(func() {
 		viper.SetConfigName("bizfly-agent")
 		viper.SetConfigType("yaml")
-		viper.AddConfigPath("/etc/bizfly-agent")
-		viper.AddConfigPath(".")
 
 		userCfgDir, err := os.UserConfigDir()
 		if err != nil {
@@ -42,6 +40,9 @@ func init() {
 		}
 		cfgDir := filepath.Join(userCfgDir, "bizfly-agent")
 		viper.AddConfigPath(cfgDir)
+
+		viper.AddConfigPath("/etc/bizfly-agent")
+		viper.AddConfigPath(".")
 
 		if err := viper.ReadInConfig(); err != nil {
 			panic(err)
@@ -55,7 +56,12 @@ func init() {
 			panic("Can't get hostname.")
 		}
 
-		Config.Agent.Hostname = hostname
+		// Config.Agent.Hostname = hostname
+		// Config.Agent.Name = hostname
+
+		// Set config
+		viper.Set("agent.name", hostname)
+		viper.Set("agent.hostname", hostname)
 	})
 }
 
@@ -77,6 +83,8 @@ type AgentsConfigurations struct {
 type ServersConfigurations struct {
 	DefaultEndpoint string
 	Secret          string
+	SecretID        string
+	Project         string
 }
 
 // PushGateWay contains push gateway configuration.
