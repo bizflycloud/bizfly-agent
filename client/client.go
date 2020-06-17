@@ -168,6 +168,7 @@ func (c *Client) RegisterAgents() error {
 	err = viper.WriteConfig()
 	if err != nil {
 		prol.Error(err)
+		return err
 	}
 	return nil
 }
