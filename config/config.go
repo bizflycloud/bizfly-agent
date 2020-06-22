@@ -47,9 +47,6 @@ func init() {
 		if err := viper.ReadInConfig(); err != nil {
 			panic(err)
 		}
-		if err := viper.Unmarshal(&Config); err != nil {
-			panic(err)
-		}
 
 		hostname, err := os.Hostname()
 		if err != nil {
@@ -62,6 +59,10 @@ func init() {
 		// Set config
 		viper.Set("agent.name", hostname)
 		viper.Set("agent.hostname", hostname)
+
+		if err := viper.Unmarshal(&Config); err != nil {
+			panic(err)
+		}
 	})
 }
 
