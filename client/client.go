@@ -108,7 +108,7 @@ func (c *Client) AuthToken() (string, error) {
 	}
 	tokenStr := string(body)
 
-	if resp.StatusCode != http.StatusAccepted {
+	if resp.StatusCode != http.StatusOK {
 		prol.Error("Error when get new auth token for agent")
 	}
 	if c.authToken != nil {
