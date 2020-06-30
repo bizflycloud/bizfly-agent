@@ -1,31 +1,51 @@
-# Make sure to check the documentation at http://goreleaser.com
+env:
+  - GO111MODULE=on
 before:
   hooks:
     - go mod download
-
 builds:
-  - env:
-      - GO111MODULE=on
-      - CGO_ENABLED=0
-    main: ./cmd/
-    binary: bizfly-agent
-    hooks:
+- env:
+    - CGO_ENABLED=0
+  goos:
+    - linux
+    - windows
+  goarch:
+    - 386
+    - amd64
+    - arm
+    - arm64
+  main: main.go
+  binary: bizfly-agent
+  hooks:
       pre: make build
-    skip: true ## set false if specific main program for building
-
+checksum:
+  name_template: '{{ .ProjectName }}_checksums.txt'
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - Merge pull request
+    - Merge branch
 archives:
-  - replacements:
+  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    replacements:
       darwin: Darwin
       linux: Linux
       windows: Windows
       386: i386
       amd64: x86_64
-
-checksum:
-  name_template: "checksums.txt"
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
+    format_overrides:
+    - goos: windows
+      format: zip
+source:
+  enabled: true
+  name_template: '{{ .ProjectName }}'
+  format: 'tar'
+release:
+  github:
+    owner: bizflycloud
+    name: bizfly-agent
+  prerelease: auto
+  name_template: "{{.ProjectName}}-v{{.Version}} {{.Env.USER}}"
