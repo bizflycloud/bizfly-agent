@@ -80,8 +80,7 @@ func (c *Client) AuthToken() (string, error) {
 
 	if config.Config.Agent.ID == "" {
 		// Register a new agent
-		var httpClient = NewHTTPClient()
-		err := httpClient.RegisterAgents()
+		err := c.RegisterAgents()
 		if err != nil {
 			prol.Fatalln(err)
 		}
