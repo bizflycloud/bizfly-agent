@@ -18,6 +18,7 @@
 package main
 
 import (
+	"runtime"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus/push"
@@ -37,7 +38,7 @@ func main() {
 
 	var httpClient = client.NewHTTPClient()
 	if _, err := httpClient.AuthToken(); err != nil {
-		prol.Errorf("failed to get client auth token: %v", err)
+		prol.Errorf("failed to get client auth token: %s", err)
 	}
 
 	pushGatewayAddress := config.Config.PushGW.URL
@@ -50,9 +51,11 @@ func main() {
 
 	pusher := push.New(pushGatewayAddress, "bizfly-agent").
 		Client(httpClient).
-		Grouping("instance_id", config.Config.Agent.ID).
 		Grouping("hostname", config.Config.Agent.Hostname).
-		Grouping("instance", config.Config.Agent.Hostname).
+		Grouping("instance", config.Config.Agent.Name).
+		Grouping("instance_id", config.Config.Agent.ID).
+		Grouping("project_id", config.Config.AuthServer.Project).
+		Grouping("runtime", runtime.GOOS).
 		Collector(nc)
 
 	if err := pusher.Push(); err != nil {

@@ -18,6 +18,8 @@
 package config
 
 import (
+	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/spf13/viper"
@@ -29,13 +31,35 @@ var o sync.Once
 
 func init() {
 	o.Do(func() {
-		viper.SetConfigFile("bizfly-agent.yaml")
+		viper.SetConfigName("bizfly-agent")
+		viper.SetConfigType("yaml")
+
+		userCfgDir, err := os.UserConfigDir()
+		if err != nil {
+			panic("Can't get user config directory")
+		}
+		cfgDir := filepath.Join(userCfgDir, "bizfly-agent")
+		viper.AddConfigPath(cfgDir)
+
 		viper.AddConfigPath("/etc/bizfly-agent")
-		viper.AddConfigPath("$HOME/.bizfly-agent")
 		viper.AddConfigPath(".")
+
 		if err := viper.ReadInConfig(); err != nil {
 			panic(err)
 		}
+
+		hostname, err := os.Hostname()
+		if err != nil {
+			panic("Can't get hostname.")
+		}
+
+		// Config.Agent.Hostname = hostname
+		// Config.Agent.Name = hostname
+
+		// Set config
+		viper.Set("agent.name", hostname)
+		viper.Set("agent.hostname", hostname)
+
 		if err := viper.Unmarshal(&Config); err != nil {
 			panic(err)
 		}
@@ -60,6 +84,8 @@ type AgentsConfigurations struct {
 type ServersConfigurations struct {
 	DefaultEndpoint string
 	Secret          string
+	SecretID        string
+	Project         string
 }
 
 // PushGateWay contains push gateway configuration.

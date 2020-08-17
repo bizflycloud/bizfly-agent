@@ -19,6 +19,8 @@ package client
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -26,6 +28,7 @@ import (
 	"time"
 
 	prol "github.com/prometheus/common/log"
+	"github.com/spf13/viper"
 
 	"github.com/bizflycloud/bizfly-agent/auth"
 	"github.com/bizflycloud/bizfly-agent/config"
@@ -37,6 +40,12 @@ type Client struct {
 	defaultEndpoint string
 	token           string
 	authToken       *auth.Token
+}
+
+// AgentCreated ...
+type AgentCreated struct {
+	Status string `json:"_status"`
+	ID     string `json:"_id"`
 }
 
 // NewHTTPClient ...
@@ -68,13 +77,24 @@ func (c *Client) AuthToken() (string, error) {
 		prol.Fatalln("Default Endpoint is required")
 	}
 	c.defaultEndpoint = config.Config.AuthServer.DefaultEndpoint
+
+	if config.Config.Agent.ID == "" {
+		// Register a new agent
+		err := c.RegisterAgents()
+		if err != nil {
+			prol.Fatalln(err)
+		}
+	}
+
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
 	if err != nil {
 		prol.Error("Error reading request. ", err)
 		return "", err
 	}
 
-	req.Header.Set("X-Agent-Secret", config.Config.AuthServer.Secret)
+	req.Header.Set("X-Auth-Secret", config.Config.AuthServer.Secret)
+	req.Header.Set("X-Auth-Secret-Id", config.Config.AuthServer.SecretID)
+	req.Header.Set("X-Tenant-Id", config.Config.AuthServer.Project)
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return "", err
@@ -87,7 +107,7 @@ func (c *Client) AuthToken() (string, error) {
 	}
 	tokenStr := string(body)
 
-	if resp.StatusCode == http.StatusForbidden {
+	if resp.StatusCode != http.StatusOK {
 		prol.Error("Error when get new auth token for agent")
 	}
 	if c.authToken != nil {
@@ -96,6 +116,60 @@ func (c *Client) AuthToken() (string, error) {
 
 	c.token = tokenStr
 	return tokenStr, nil
+}
+
+// RegisterAgents create a new agent in server
+func (c *Client) RegisterAgents() error {
+	if config.Config.AuthServer.DefaultEndpoint == "" {
+		prol.Fatalln("Default Endpoint is required")
+	}
+	c.defaultEndpoint = config.Config.AuthServer.DefaultEndpoint
+
+	payload, err := json.Marshal(map[string]string{
+		"name":     config.Config.Agent.Name,
+		"hostname": config.Config.Agent.Hostname,
+	})
+	if err != nil {
+		prol.Fatalln("Can't register new agent")
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/agents", c.defaultEndpoint), bytes.NewBuffer(payload))
+	if err != nil {
+		prol.Error("Error reading request. ", err)
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("X-Auth-Secret", config.Config.AuthServer.Secret)
+	req.Header.Set("X-Auth-Secret-Id", config.Config.AuthServer.SecretID)
+	req.Header.Set("X-Tenant-Id", config.Config.AuthServer.Project)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		return errors.New("Error when register new agent to systems")
+	}
+
+	var agent *AgentCreated
+	err = json.NewDecoder(resp.Body).Decode(&agent)
+	if err != nil {
+		return err
+	}
+
+	config.Config.Agent.ID = agent.ID
+	viper.Set("agent.id", agent.ID)
+
+	// Write config to a file bizfly-agent.yaml
+	err = viper.WriteConfig()
+	if err != nil {
+		prol.Error(err)
+		return err
+	}
+	return nil
 }
 
 // Do ...

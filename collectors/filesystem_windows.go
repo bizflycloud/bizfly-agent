@@ -15,10 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>
 
-// +build !linux
+// +build windows
 
 package collectors
 
-func getDeviceMapping() (m map[string]string) {
-	return
+import (
+	"github.com/shirou/gopsutil/disk"
+)
+
+func getDeviceMapping() map[string]string {
+	m := make(map[string]string)
+	partitions, _ := disk.Partitions(false)
+	for _, partition := range partitions {
+		m[partition.Mountpoint] = partition.Device
+	}
+	return m
 }
