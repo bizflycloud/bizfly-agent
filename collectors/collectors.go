@@ -26,6 +26,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/prometheus/client_golang/prometheus"
 	dto "github.com/prometheus/client_model/go"
+	prol "github.com/prometheus/common/log"
 	"github.com/prometheus/node_exporter/collector"
 
 	"github.com/bizflycloud/bizfly-agent/client"
@@ -128,7 +129,10 @@ func (m deviceMappingMetric) Write(pb *dto.Metric) error {
 	e := m.metric.Write(pb)
 	for _, label := range pb.Label {
 		if label.GetName() == "device" {
-			m.updateDeviceLabel(label)
+			err := m.updateDeviceLabel(label)
+			if err != nil {
+				prol.Errorf("Can't update label device %v", label)
+			}
 			break
 		}
 	}
