@@ -10,9 +10,9 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.10.0
 	github.com/prometheus/node_exporter v1.0.0
-	github.com/shirou/gopsutil v2.20.4+incompatible
+	github.com/shirou/gopsutil v2.20.6+incompatible
 	github.com/spf13/viper v1.7.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
 
-replace github.com/prometheus/node_exporter => github.com/bizflycloud/node_exporter v1.0.0
+replace github.com/prometheus/node_exporter => github.com/bizflycloud/node_exporter v1.0.1
