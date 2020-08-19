@@ -1,12 +1,9 @@
-agent:
-  id: 5ecb7d23a0a0be000f8fbff6
-  name: gooogle-node-apjxd08l
-  hostname: gooogle-node-apjxd08l
-
 authServer:
-  defaultEndpoint: http://192.168.53.89:8009
-  secret: sjuyhfifkodcpzucmlsiwehtzdrrtnwq
+  defaultEndpoint: https://hn.manage.bizflycloud.vn/api/alert
+  project: projectid
+  secret: secretkey
+  secretID: secretid
 
 pushGW:
-  url: http://192.168.53.89:9091
+  url: https://metrics-hn.manage.bizflycloud.vn
   waitDuration: 30
