@@ -202,7 +202,7 @@ fi
 
 # Set the system service
 if [ ! -e $SERVICE ]; then
-  $sudo_cmd "$DOWNLOAD_TOOL" "https://raw.githubusercontent.com/bizflycloud/bizfly-agent/master/script/ba-agent.service" -O "$SERVICE"
+  $sudo_cmd "$DOWNLOAD_TOOL" "https://raw.githubusercontent.com/bizflycloud/bizfly-agent/master/script/linux/ba-agent.service" -O "$SERVICE"
 fi
 
 # Creating or overriding the install information
