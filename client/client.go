@@ -86,7 +86,7 @@ func (c *Client) AuthToken() (string, error) {
 		}
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agents/tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
 	if err != nil {
 		prol.Error("Error reading request. ", err)
 		return "", err
