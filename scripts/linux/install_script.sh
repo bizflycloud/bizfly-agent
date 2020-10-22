@@ -128,7 +128,7 @@ UNAME_M=$(uname -m)
 if [ "$UNAME_M"  == "i686" ] || [ "$UNAME_M"  == "i386" ] || [ "$UNAME_M"  == "x86" ]; then
     ARCHI="i386"
 elif [ "$UNAME_M"  == "aarch64" ]; then
-    ARCHI="aarch64"
+    ARCHI="arm64"
 else
     ARCHI="x86_64"
 fi

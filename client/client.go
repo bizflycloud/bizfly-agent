@@ -25,6 +25,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"runtime"
 	"time"
 
 	prol "github.com/prometheus/common/log"
@@ -86,7 +87,7 @@ func (c *Client) AuthToken() (string, error) {
 		}
 	}
 
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agent_tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/agents/tokens?agent_id=%s", c.defaultEndpoint, config.Config.Agent.ID), nil)
 	if err != nil {
 		prol.Error("Error reading request. ", err)
 		return "", err
@@ -128,6 +129,7 @@ func (c *Client) RegisterAgents() error {
 	payload, err := json.Marshal(map[string]string{
 		"name":     config.Config.Agent.Name,
 		"hostname": config.Config.Agent.Hostname,
+		"runtime":  runtime.GOOS,
 	})
 	if err != nil {
 		prol.Fatalln("Can't register new agent")
