@@ -25,6 +25,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"runtime"
 	"time"
 
 	prol "github.com/prometheus/common/log"
@@ -128,6 +129,7 @@ func (c *Client) RegisterAgents() error {
 	payload, err := json.Marshal(map[string]string{
 		"name":     config.Config.Agent.Name,
 		"hostname": config.Config.Agent.Hostname,
+		"runtime":  runtime.GOOS,
 	})
 	if err != nil {
 		prol.Fatalln("Can't register new agent")
