@@ -50,6 +50,8 @@ github.com/bizflycloud/node_exporter v1.0.0 h1:B0VgEEwnbpZZqCBJEylVgL30OhdJw4DkE
 github.com/bizflycloud/node_exporter v1.0.0/go.mod h1:NNSSAhWYgSCW41Qg/5apo16YOZ0BfRP4XfYPu0yFUTk=
 github.com/bizflycloud/node_exporter v1.0.1 h1:auV6zNRZYtMpl9ZP+KbbD8GTUDH8GCnWVBUV2yCtGa8=
 github.com/bizflycloud/node_exporter v1.0.1/go.mod h1:EV4dSQaOaqHetH7d+49aFgxBZMjml4+4kppFV97zF7c=
+github.com/bizflycloud/node_exporter v1.0.2 h1:vTqs8qYrAPGvqWk4J1KvihHWJldImKTrSpQ6R93f/k0=
+github.com/bizflycloud/node_exporter v1.0.2/go.mod h1:EV4dSQaOaqHetH7d+49aFgxBZMjml4+4kppFV97zF7c=
 github.com/bketelsen/crypt v0.0.3-0.20200106085610-5cbc8cc4026c/go.mod h1:MKsuJmJgSg28kpZDP6UIiPt0e0Oz0kqKNGyRaWEPv84=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=

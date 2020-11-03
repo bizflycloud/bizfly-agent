@@ -15,4 +15,4 @@ require (
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
 
-replace github.com/prometheus/node_exporter => github.com/bizflycloud/node_exporter v1.0.1
+replace github.com/prometheus/node_exporter => github.com/bizflycloud/node_exporter v1.0.2
