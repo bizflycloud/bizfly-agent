@@ -9,7 +9,7 @@ logfile="BAagent-install.log"
 
 ETCDIR=$(echo "/etc/bizfly-agent")
 CONF="$ETCDIR/bizfly-agent.yaml"
-SERVICE="/lib/systemd/system/ba-agent.service"
+SERVICE="/lib/systemd/system/bizfly-agent.service"
 
 # Set up a named pipe for logging
 npipe=/tmp/$$.tmp
@@ -202,7 +202,7 @@ fi
 
 # Set the system service
 if [ ! -e $SERVICE ]; then
-  $sudo_cmd "$DOWNLOAD_TOOL" "https://raw.githubusercontent.com/bizflycloud/bizfly-agent/master/scripts/linux/ba-agent.service" -O "$SERVICE"
+  $sudo_cmd "$DOWNLOAD_TOOL" "https://raw.githubusercontent.com/bizflycloud/bizfly-agent/master/scripts/linux/bizfly-agent.service" -O "$SERVICE"
 fi
 
 # Creating or overriding the install information
@@ -214,8 +214,8 @@ install_method:
 "
 $sudo_cmd sh -c "echo '$install_info_content' > $ETCDIR/install_info"
 
-# On SUSE 11, sudo service ba-agent start fails (because /sbin is not in a base user's path)
-# However, sudo /sbin/service ba-agent does work.
+# On SUSE 11, sudo service bizfly-agent start fails (because /sbin is not in a base user's path)
+# However, sudo /sbin/service bizfly-agent does work.
 # Use which (from root user) to find the absolute path to service
 service_cmd="service"
 if [ "$SUSE11" == "yes" ]; then
@@ -224,20 +224,20 @@ fi
 
 # Use /usr/sbin/service by default.
 # Some distros usually include compatibility scripts with Upstart or Systemd. Check with: `command -v service | xargs grep -E "(upstart|systemd)"`
-restart_cmd="$sudo_cmd $service_cmd ba-agent restart"
-stop_instructions="$sudo_cmd $service_cmd ba-agent stop"
-start_instructions="$sudo_cmd $service_cmd ba-agent start"
+restart_cmd="$sudo_cmd $service_cmd bizfly-agent restart"
+stop_instructions="$sudo_cmd $service_cmd bizfly-agent stop"
+start_instructions="$sudo_cmd $service_cmd bizfly-agent start"
 
 if command -v systemctl 2>&1; then
   # Use systemd if systemctl binary exists
-  restart_cmd="$sudo_cmd systemctl restart ba-agent.service"
-  stop_instructions="$sudo_cmd systemctl stop ba-agent"
-  start_instructions="$sudo_cmd systemctl start ba-agent"
+  restart_cmd="$sudo_cmd systemctl restart bizfly-agent.service"
+  stop_instructions="$sudo_cmd systemctl stop bizfly-agent"
+  start_instructions="$sudo_cmd systemctl start bizfly-agent"
 elif /sbin/init --version 2>&1 | grep -q upstart; then
   # Try to detect Upstart, this works most of the times but still a best effort
-  restart_cmd="$sudo_cmd stop ba-agent || true ; sleep 2s ; $sudo_cmd start ba-agent"
-  stop_instructions="$sudo_cmd stop ba-agent"
-  start_instructions="$sudo_cmd start ba-agent"
+  restart_cmd="$sudo_cmd stop bizfly-agent || true ; sleep 2s ; $sudo_cmd start bizfly-agent"
+  stop_instructions="$sudo_cmd stop bizfly-agent"
+  start_instructions="$sudo_cmd start bizfly-agent"
 fi
 
 if [ $no_start ]; then
