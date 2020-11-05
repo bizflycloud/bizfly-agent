@@ -1,9 +1,22 @@
-authServer:
-  defaultEndpoint: https://hn.manage.bizflycloud.vn/api/alert
-  project: projectid
-  secret: secretkey
-  secretID: secretid
+# Config authentication server
+authserver:
+  # API of service
+  defaultendpoint: http://127.0.0.1:8009
 
-pushGW:
-  url: https://metrics-hn.manage.bizflycloud.vn
-  waitDuration: 30
+  # Project ID of client
+  project: 4a92824aa74445f28d7cf814a54ee283
+
+  # Information to authen with API of service
+  # Secret
+  secret: uvvkkahzllyytjcyziynbfirrapurfpu
+
+  # Secret ID have secret
+  secretid: 5f212bacbff2030010470488
+
+# Config pushgateway server
+pushgw:
+  # Endpoint of pushgateway
+  url: http://127.0.0.1:9091
+  waitduration: 30
+
+
