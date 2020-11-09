@@ -1,0 +1,17 @@
+[Unit]
+Description=BizFly Agent (BAA)
+After=network.target
+
+
+[Service]
+Type=simple
+User=root
+Restart=on-failure
+ExecStart=/opt/bizfly-agent/bizfly-agent --collector.cpu.info --collector.processes --collector.systemd
+# Since systemd 229, should be in [Unit] but in order to support systemd <229,
+# it is also supported to have it here.
+StartLimitInterval=10
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
