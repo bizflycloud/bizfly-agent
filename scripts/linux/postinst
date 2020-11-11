@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "Installed bizfly-agent succeeded"
+
+
+echo "Enabling service bizfly-agent"
+sudo systemctl enable bizfly-agent
+
+echo -e "\033[34mYour Agent is running and functioning properly. It will continue to run in the\nbackground and submit metrics to BizFlyCloud.\n\nIf you ever want to stop the Agent, run:\n\n systemctl stop bizfly-agent\n\nAnd to run it again run:\n\n systemctl start bizfly-agent\n\033[0m"
+
+echo -e "\033[34mPlease configure for bizfly-agent by edit /etc/bizfly-agent/bizfly-agent.yaml\nand then again run this command:\n\n systemctl start bizfly-agent\n\n\033[0m"

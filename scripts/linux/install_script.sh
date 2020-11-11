@@ -164,7 +164,7 @@ else
   fi
   if [ ! -e $CONF ]; then
     printf "\033[34m\n* Getting example configuration file\n\033[0m\n"
-    $sudo_cmd "$DOWNLOAD_TOOL" "https://raw.githubusercontent.com/bizflycloud/bizfly-agent/master/bizfly-agent.yaml" -O "$CONF"
+    $sudo_cmd "$DOWNLOAD_TOOL" "https://raw.githubusercontent.com/bizflycloud/bizfly-agent/master/etc/bizfly-agent/bizfly-agent.yaml" -O "$CONF"
   fi
   if [ "$secretkey" ]; then
     printf "\033[34m\n* Adding your Secret Key to the Agent configuration: $CONF\n\033[0m\n"

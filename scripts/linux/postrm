@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "Cleaning bizfly-agent package"
+
+# Stop and Disable service bizfly-agent
+sudo systemctl disable bizfly-agent
+sudo systemctl stop bizfly-agent
+
+# Remove files
+sudo rm -rf /lib/systemd/system/bizfly-agent.service
+sudo rm -rf /etc/bizfly-agent
+
+# Reload daemon
+sudo systemctl daemon-reload

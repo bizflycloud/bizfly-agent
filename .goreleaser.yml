@@ -43,9 +43,39 @@ source:
   enabled: true
   name_template: '{{ .ProjectName }}'
   format: 'tar'
+nfpms:
+  - file_name_template: '{{ .ProjectName }}-v{{ .Version }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+    maintainer: "botv <botv@vccloud.vn>"
+    description: |
+      Collect system metrics and send to pushgateway.
+       Note bizfly-agent uses node exporter, with some modification to filesystem
+       metrics to report the whole volume instead of mount points.
+       Only Linux is supported.
+    vendor: "BizFly Cloud"
+    homepage: "https://github.com/bizflycloud/bizfly-agent"
+    license: "GPL-3.0"
+    formats:
+      - apk
+      - deb
+      - rpm
+    dependencies:
+      - git
+    recommends:
+      - golang
+    files:
+      ./usr/bin/bizfly-agent: "/usr/bin/bizfly-agent"
+      ./scripts/linux/bizfly-agent.service: "/lib/systemd/system/bizfly-agent.service"
+
+    config_files:
+      ./etc/bizfly-agent/bizfly-agent.yaml: "/etc/bizfly-agent/bizfly-agent.yaml"
+    scripts:
+      preinstall: ./scripts/linux/preinst
+      postinstall: ./scripts/linux/postinst
+      postremove: ./scripts/linux/postrm
 release:
   github:
-    owner: bizflycloud
+    owner: bizflycloud 
     name: bizfly-agent
   prerelease: auto
-  name_template: "{{.ProjectName}}-v{{.Version}} {{.Env.USER}}"
+  name_template: "{{ .ProjectName }}-v{{ .Version }} {{ .Env.USER }}"
+
