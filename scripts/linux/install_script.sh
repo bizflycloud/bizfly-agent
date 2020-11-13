@@ -239,7 +239,7 @@ function create_service(){
   stop_instructions="$sudo_cmd $service_cmd bizfly-agent stop"
   start_instructions="$sudo_cmd $service_cmd bizfly-agent start"
 
-  if command -v systemctl 2>&1; then
+  if is_command systemctl; then
     # Use systemd if systemctl binary exists
     restart_cmd="$sudo_cmd systemctl restart bizfly-agent.service"
     stop_instructions="$sudo_cmd systemctl stop bizfly-agent"
