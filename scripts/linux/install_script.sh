@@ -24,9 +24,8 @@ function usage() {
   cat <<EOF
 $this: download go binaries for bizflycloud/bizfly-agent
 
-Usage: $this [-b] bindir [-d] [tag]
+Usage: $this [-b] bindir [tag]
   -b sets bindir or installation directory, Defaults to ./bin
-  -d turns on debug logging
    [tag] is a tag from
    https://github.com/bizflycloud/bizfly-agent/releases
    If tag is missing, then the latest will be used.
@@ -320,7 +319,6 @@ function log_tag() {
     4) echo "warning" ;;
     5) echo "notice" ;;
     6) echo "info" ;;
-    7) echo "debug" ;;
     *) echo "$1" ;;
   esac
 }
