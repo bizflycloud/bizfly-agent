@@ -45,7 +45,7 @@ archives:
       format: zip
 source:
   enabled: true
-  name_template: '{{ .ProjectName }}'
+  name_template: '{{ .ProjectName }}-v{{ .Version }}'
   format: 'tar'
 nfpms:
   - file_name_template: '{{ .ProjectName }}-v{{ .Version }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
