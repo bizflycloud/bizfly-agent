@@ -62,8 +62,6 @@ nfpms:
       - apk
       - deb
       - rpm
-    dependencies:
-      - git
     recommends:
       - golang
     files:
