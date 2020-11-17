@@ -193,7 +193,7 @@ function config(){
     fi
     if [ -n "$secretid" ]; then
       printf "\033[34m\n* Setting Secret ID in the Agent configuration: $CONF\n\033[0m\n"
-      $sudo_cmd sh -c "sed -i 's/secretID:.*/secretID: $secretid/' $CONF"
+      $sudo_cmd sh -c "sed -i 's/secretid:.*/secretid: $secretid/' $CONF"
     else
       printf "\033[31mThe Agent won't start automatically at the end of the script because the Secret ID is missing, please add one in bizfly-agent.yaml and start the agent manually.\n\033[0m\n"
       no_start=true
@@ -207,7 +207,7 @@ function config(){
     fi
     if [ -n "$region" ]; then
       printf "\033[34m\n* Setting Default Endpoint BizFly Alert API in the Agent configuration: $CONF\n\033[0m\n"
-      $sudo_cmd sh -c "sed -i 's|defaultEndpoint:.*|defaultEndpoint: $BA_API|' $CONF"
+      $sudo_cmd sh -c "sed -i 's|defaultendpoint:.*|defaultendpoint: $BA_API|' $CONF"
       $sudo_cmd sh -c "sed -i 's|url:.*|url: $pushGW_URL|' $CONF"
     else
       printf "\033[31mThe Agent won't start automatically at the end of the script because the Region is missing, please add one in bizfly-agent.yaml and start the agent manually.\n\033[0m\n"
