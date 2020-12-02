@@ -272,7 +272,7 @@ function final(){
   printf "\033[32m
 
 Your Agent is running and functioning properly. It will continue to run in the
-background and submit metrics to Datadog.
+background and submit metrics to BizFly Cloud.
 
 If you ever want to stop the Agent, run:
 
