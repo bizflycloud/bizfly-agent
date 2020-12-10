@@ -241,6 +241,9 @@ function create_service(){
 
   if is_command systemctl; then
     # Use systemd if systemctl binary exists
+    enable_cmd="$sudo_cmd systemctl enable bizfly-agent.service"
+    eval "$enable_cmd"
+
     restart_cmd="$sudo_cmd systemctl restart bizfly-agent.service"
     stop_instructions="$sudo_cmd systemctl stop bizfly-agent"
     start_instructions="$sudo_cmd systemctl start bizfly-agent"
