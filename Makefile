@@ -1,7 +1,7 @@
 PROJECT_NAME := "bizfly-agent"
 PKG := "github.com/bizflycloud/$(PROJECT_NAME)"
 PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/)
-
+VERSION ?= "dev"
 
 .PHONY: all test test-coverage build
 
@@ -15,7 +15,7 @@ test-coverage: ## Run tests with coverage
 	@cat cover.out >> coverage.txt
 
 build: ## Build the binary file
-	@go build -i -o usr/bin/bizfly-agent *.go
+	@go build -ldflags="-X github.com/bizflycloud/bizfly-agent/main.version=$(VERSION) -X github.com/bizflycloud/bizfly-agent/main.gitCommit=$(shell git rev-parse --short HEAD)" -i -o usr/bin/bizfly-agent *.go
 
 clean: ## Remove previous build
 	@rm -rf usr/bin/bizfly-agent

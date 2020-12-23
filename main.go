@@ -30,7 +30,20 @@ import (
 	"github.com/bizflycloud/bizfly-agent/config"
 )
 
+var (
+	version   string
+	gitCommit string
+)
+
 func main() {
+	// Show current version
+	if version == "" {
+		version = "BizFly Metrics Agent version: dev"
+	} else {
+		version = "BizFly Metrics Agent version: " + version + ", build: " + gitCommit
+	}
+	kingpin.Version(version)
+
 	// Do not remove theses lines, prometheus needs them to run.
 	prol.AddFlags(kingpin.CommandLine)
 	kingpin.HelpFlag.Short('h')
