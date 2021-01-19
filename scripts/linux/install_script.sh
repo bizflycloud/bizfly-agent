@@ -222,6 +222,7 @@ function config(){
 function create_service(){
   # Set the system service
   if [ ! -e $SYSTEMD_FILE ]; then
+    printf "\033[34m\n* Getting example service file\n\033[0m\n"
     http_download "$SYSTEMD_FILE" "$GITHUB_SYSTEMD_FILE"
   fi
 
