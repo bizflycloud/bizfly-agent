@@ -4,6 +4,7 @@ go 1.14
 
 require (
 	github.com/go-kit/kit v0.10.0
+	github.com/mindprince/gonvml v0.0.0-20190828220739-9ebdce4bb989 // indirect
 	github.com/prometheus/client_golang v1.7.1
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.14.0
@@ -13,4 +14,4 @@ require (
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
 
-replace github.com/prometheus/node_exporter => github.com/bizflycloud/node_exporter v1.0.2
+replace github.com/prometheus/node_exporter => github.com/bizflycloud/node_exporter v1.0.3
