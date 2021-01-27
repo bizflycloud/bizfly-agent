@@ -65,12 +65,14 @@ nfpms:
       - rpm
     recommends:
       - golang
-    files:
-      ./usr/bin/bizfly-agent: "/usr/bin/bizfly-agent"
-      ./scripts/linux/bizfly-agent.service: "/lib/systemd/system/bizfly-agent.service"
-
-    config_files:
-      ./etc/bizfly-agent/bizfly-agent.yaml: "/etc/bizfly-agent/bizfly-agent.yaml"
+    contents:
+      - src: ./usr/bin/bizfly-agent
+        dst: /usr/bin/bizfly-agent
+      - src: ./scripts/linux/bizfly-agent.service
+        dst: "/lib/systemd/system/bizfly-agent.service"
+      - src: ./etc/bizfly-agent/bizfly-agent.yaml
+        dst: "/etc/bizfly-agent/bizfly-agent.yaml"
+        type: config
     scripts:
       preinstall: ./scripts/linux/preinst
       postinstall: ./scripts/linux/postinst
